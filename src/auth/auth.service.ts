@@ -38,7 +38,8 @@ export class AuthService {
         this.nftContractAddress = "";
     }
 
-    checkNFT(): boolean {
+    checkNFT(walletId): boolean {
+        console.log("Checking NFT for wallet:", walletId);
         return true;
     }
 
