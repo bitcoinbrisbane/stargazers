@@ -4,7 +4,7 @@ import { CollectionRequestDTO } from "src/dtos/collectionDTO";
 
 @Controller()
 export class AdminController {
-    constructor(private readonly adminService: AdminService) { }
+    constructor(private readonly adminService: AdminService) {}
 
     @Post()
     public async collections(

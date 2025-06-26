@@ -1,5 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import {
+    ExecutionContext,
+    Injectable,
+    UnauthorizedException
+} from "@nestjs/common";
 import { ethers } from "ethers";
+import { extractTokenFromHeader } from "src/utils/auth";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -19,13 +25,14 @@ export class AuthService {
     // ERC-721 interface ID
     private readonly ERC721_INTERFACE_ID = "0x80ac58cd";
 
-    constructor() {
+    constructor(private readonly jwtService: JwtService) {
         // // Initialize provider - you can use Infura, Alchemy, or other providers
         // const rpcUrl: string =
         //     this.configService.get<string>("ETHEREUM_RPC_URL") ||
         //     "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
 
-        const rpcUrl: string = "https://mainnet.infura.io/v3/32625232d8134a57b429912c52541dd6";
+        const rpcUrl: string =
+            "https://mainnet.infura.io/v3/32625232d8134a57b429912c52541dd6";
 
         this.provider = new ethers.JsonRpcProvider(rpcUrl);
         this.nftContractAddress = "";
@@ -33,6 +40,32 @@ export class AuthService {
 
     checkNFT(): boolean {
         return true;
+    }
+
+    async validAdmin(context: ExecutionContext): Promise<boolean> {
+        const request = context.switchToHttp().getRequest();
+        const token = extractTokenFromHeader(request.headers.authorization);
+
+        if (!token) {
+            const errorMessage = "No token found in request header";
+            throw new UnauthorizedException(errorMessage);
+        }
+
+        try {
+            const authUser = await this.jwtService.verifyAsync(token, {
+                secret: process.env.JWT_SECRET || "your-secret-key",
+                ignoreExpiration: false
+            });
+
+            if (!authUser || !authUser.role || authUser.role !== "admin") {
+                const errorMessage = "Unauthorized access: Admin role required";
+                throw new UnauthorizedException(errorMessage);
+            }
+
+            return true;
+        } catch (error) {
+            throw new UnauthorizedException(error);
+        }
     }
 
     // /**
@@ -149,7 +182,6 @@ export class AuthService {
     //             this.ERC721_ABI,
     //             this.provider
     //         );
-
 
     //         // If supportsInterface fails, try calling basic ERC-721 functions
     //         try {
