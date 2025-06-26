@@ -1,15 +1,15 @@
 services:
   postgres:
     image: postgres:15-bookworm
-    container_name: stargazer-db
+    container_name: stargaze-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-stargazer-db}
+      POSTGRES_DB: ${POSTGRES_DB:-stargaze-db}
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    #   - ./init-db:/docker-entrypoint-initdb.d
     ports:
       - "${POSTGRES_PORT:-5432}:5432"

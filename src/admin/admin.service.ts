@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 export class AdminService {
     constructor(
         @InjectRepository(Collection)
-        private collectionRepository: Repository<Collection>
+        private readonly collectionRepository: Repository<Collection>
     ) {}
 
     async addCollection(request: CollectionRequestDTO): Promise<boolean> {
