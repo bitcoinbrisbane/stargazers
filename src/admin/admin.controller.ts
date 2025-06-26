@@ -1,12 +1,15 @@
-import { Controller, Get } from "@nestjs/common";
-import { AppService } from "./auth.service";
+import { Body, Controller, Post } from "@nestjs/common";
+import { AdminService } from "./admin.service";
+import { CollectionRequestDTO } from "src/dtos/collectionDTO";
 
 @Controller()
 export class AdminController {
-    constructor(private readonly appService: AppService) {}
+    constructor(private readonly adminService: AdminService) { }
 
-    @Get()
-    checkNft(): string {
-        return this.appService.getHello();
+    @Post()
+    public async collections(
+        @Body() body: CollectionRequestDTO
+    ): Promise<boolean> {
+        return this.adminService.addCollection(body);
     }
 }
