@@ -1,11 +1,11 @@
-# Setup
+## Setup
 
 ```bash
 cp .env.example .env
 yarn install
 ```
 
-# Running the application
+## Running the application
 
 ```bash
 yarn start:dev
