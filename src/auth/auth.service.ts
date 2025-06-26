@@ -31,8 +31,8 @@ export class AuthService {
         //     this.configService.get<string>("ETHEREUM_RPC_URL") ||
         //     "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
 
-        const rpcUrl: string =
-            "https://mainnet.infura.io/v3/32625232d8134a57b429912c52541dd6";
+        const rpcUrl: string = process.env.ETHEREUM_RPC_URL ||
+            "https://mainnet.infura.io/v3/";
 
         this.provider = new ethers.JsonRpcProvider(rpcUrl);
         this.nftContractAddress = "";
